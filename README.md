@@ -8,6 +8,7 @@ One codebase, honest framings for **cloud software / backend / platform / develo
 |--------|------|--------|
 | REST service | `GET /health`, `GET /api/v1/sessions`, `POST /api/v1/events` | Spring Boot–style service design (Python/FastAPI) |
 | **Secrets / CLI** | `python run_secrets_cli.py list/get/mount-env` | Client secrets, developer platform, `.env` mounting |
+| **Agentic workflows** | `python run_agent.py` | GenAI agents, prompt grounding, hallucination checks |
 | Observability | `GET /metrics` (Prometheus text) | Prometheus, SLO/ops, low-latency monitoring |
 | Containers | `Dockerfile`, `docker-compose.yml` | Docker, containerized microservices |
 
@@ -27,6 +28,10 @@ pytest tests/test_api.py -q      # 5 passing
 python run_secrets_cli.py list --project web-app
 python run_secrets_cli.py mount-env --project web-app --output .env.local
 pytest tests/test_secrets.py -q  # 8 passing
+
+# Campbell's / agentic AI interview
+python run_agent.py
+pytest tests/test_agent.py -q    # 6 passing
 
 pytest -q                      # full suite
 uvicorn cloudlab.app:app --reload --port 8000
