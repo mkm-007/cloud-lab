@@ -3,10 +3,13 @@ from __future__ import annotations
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
+from cloudlab.secrets import SecretsStore
 from cloudlab.store import ServiceStore
 
 store = ServiceStore()
 store.seed_sessions()
+secrets_store = SecretsStore()
+secrets_store.seed()
 
 app = FastAPI(title="cloud-lab", version="0.1.0")
 
@@ -55,3 +58,17 @@ def metrics():
         f"cloud_events_ingested {len(store.events)}",
     ]
     return "\n".join(lines) + "\n"
+
+
+@app.get("/api/v1/secrets")
+def list_secrets(project: str | None = None):
+    items = secrets_store.list_for_project(project)
+    return {"count": len(items), "secrets": items}
+
+
+@app.get("/api/v1/secrets/{name}")
+def get_secret(name: str, project: str | None = None):
+    secret = secrets_store.get(name, project)
+    if secret is None:
+        raise HTTPException(status_code=404, detail="secret not found")
+    return secret
